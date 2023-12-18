@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:slim
 RUN mkdir -p /home/dragon-mailer/
 COPY . /home/dragon-mailer/
 WORKDIR /home/dragon-mailer/
