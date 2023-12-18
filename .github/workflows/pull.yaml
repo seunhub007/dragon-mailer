@@ -1,0 +1,53 @@
+name: Run the Action on each commit
+on:
+  push:
+    branches-ignore: master
+jobs:
+  action-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Create pull request
+        uses: devops-infra/action-pull-request@v0.5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          title: Automatic pull request
+# -  name: Post to a Slack channel
+      #    uses: slackapi/slack-github-action@v1.24.0
+      #    id: "slack"
+      #    with:
+      #     url: "http://api.exchangeratesapi.io/v1/latest?access_key=${{ secrets.API_KEY }}&symbols = USD,AUD,CAD,PLN,MXN"
+      #     method: GET
+      #     customHeaders: '{"Content-Type": "application/json"}'
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          # You can pass in multiple channels to post to by providing a comma-delimited list of channel IDs.
+          channel-id: 'C014L40SFT4'
+          # For posting a simple plain text message
+          slack-message: "GitHub build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      # - name: Show Request response
+      #   run: |
+      #     echo ${{ fromJson(steps.make_request.outputs.response).rates.USD }}
+
+      - name: Send mailer
+        uses: dawidd6/action-send-mail@v3
+        with:
+          #  * smtp://user:password@server:port
+  
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Github Actions job result
+          to: sadiboseun@gmail.com
+          from: sadiboseun2013@gmail.com
+          body: Build job of ${{github.repository}} completed successfully!
