@@ -1,28 +1,17 @@
-name: automerge
+name: Merge any release branch to master
 on:
-  pull_request:
-    types:
-    #   - labeled
-    #   - unlabeled
-      - synchronize
-    #   - opened
-    #   - edited
-    #   - ready_for_review
-    #   - reopened
-    #   - unlocked
-  pull_request_review:
-    types:
-      - submitted
-  check_suite:
-    types:
-      - completed
-  status: {}
+  push:
+    branches:
+      - 'release/*'
 jobs:
-  automerge:
+  merge-branch:
     runs-on: ubuntu-latest
     steps:
-      - id: automerge
-        name: automerge
-        uses: "pascalgn/automerge-action@v0.15.6"
-        env:
-          GIT_TOKEN: "${{ secrets.GIT_TOKEN }}"
+      - uses: actions/checkout@master
+      - name: Merge pull -> master
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: master
+          message: Merge pull into master
+          github_token: ${{ secrets.GIT_TOKEN }}
