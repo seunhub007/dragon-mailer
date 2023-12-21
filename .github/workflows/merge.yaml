@@ -1,17 +1,17 @@
-name: Sync multiple branches
+name: Merge any release branch to main
 on:
   push:
     branches:
-      - '*'
+      - 'release/*'
 jobs:
-  sync-branch:
+  merge-branch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Merge pull -> master
-        uses: devmasx/merge-branch@master
+      - uses: actions/checkout@main
+      - name: Merge pull -> main
+        uses: devmasx/merge-branch@main
         with:
           type: now
-          from_branch: pull
-          target_branch: master
+          target_branch: main
+          message: Merge pull into main
           github_token: ${{ secrets.GIT_TOKEN }}
