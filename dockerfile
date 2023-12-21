@@ -1,7 +1,7 @@
-FROM node:slim
-RUN mkdir -p /home/dragon-mailer/
-COPY . /home/dragon-mailer/
-WORKDIR /home/dragon-mailer/
+FROM node:13-alpine3.10
+WORKDIR /app
+COPY . .
+COPY package.json .
 RUN npm install
-EXPOSE 3001
-CMD ["npm", "run", "start"]
+EXPOSE 4343
+CMD ["node", "dragon.js"]
